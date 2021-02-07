@@ -26,11 +26,18 @@ ENV PYTHON_VERSION 3.8.7
 
 
 # 20210113 az from V20 Dockerfile
-ENV DEBIAN_FRONTEND noninteractive
+# so that no question/dialog is asked during apt-get install
+# ENV DEBIAN_FRONTEND noninteractive
+
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+
 ADD https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
 RUN set -e \
       && ln -sf bash /bin/sh \
-      && ln -s python3 /usr/bin/python
+# changed order of link
+      && ln -s /usr/bin/python python3
 RUN set -e \
       && apt-get -y update \
       && apt-get -y dist-upgrade \
@@ -119,4 +126,25 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-CMD ["python3"]
+# az 2021-02-07
+RUN set -e \
+     && /usr/local/bin/python -m pip install --upgrade pip
+RUN set -e \
+      && pip install pyyaml
+RUN set -e \
+      && pip install v20
+RUN set -e \
+      && python -m pip install virtualenv
+RUN set -e \
+    && cp /Users/A/Desktop/20200804_Google_Drive_Bak-Peoples-OTC-Anitani/Peoples_FinTech/Tech/oandaPython4/ ~
+
+RUN set -e \
+    && make bootstrap
+RUN set -e \
+     && source env/bin/activate
+RUN set -e \
+   && python setup.py develop
+RUN set -e \
+    && cp /home/.v20.conf ~
+
+CMD ["bash"]
