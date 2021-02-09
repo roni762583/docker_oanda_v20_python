@@ -135,16 +135,17 @@ RUN set -e \
       && pip install v20
 RUN set -e \
       && python -m pip install virtualenv
-RUN set -e \
-    && cp /Users/A/Desktop/20200804_Google_Drive_Bak-Peoples-OTC-Anitani/Peoples_FinTech/Tech/oandaPython4/ ~
+
+# copy Makefile, .v20.conf, etc.
+COPY ./ .
 
 RUN set -e \
-    && make bootstrap
+     && make bootstrap
+
 RUN set -e \
      && source env/bin/activate
+
 RUN set -e \
-   && python setup.py develop
-RUN set -e \
-    && cp /home/.v20.conf ~
+     && python setup.py develop
 
 CMD ["bash"]
