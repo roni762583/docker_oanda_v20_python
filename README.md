@@ -1,4 +1,4 @@
-# dockerfile
+# oanda_v20_python
 # dockerfile for python environment with installed Oanda v20 API samples
 
 # Instructions:
