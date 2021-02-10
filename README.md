@@ -7,7 +7,10 @@ Clone repository
 
 In a terminal, at directory of cloned repo, run:
 
-            docker run -it $(docker build -q .)
+            docker build -t username/oanda_v20_python .
+            
+            docker run -it oanda_v20_python
+####docker run -it $(docker build -q .)
 
 - this will build the container according to dockerfile including files from repo
 
