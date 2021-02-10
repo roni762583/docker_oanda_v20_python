@@ -112,6 +112,10 @@ RUN set -e \
 RUN set -e \
       && python -m pip install tabulate
 
+# az
+RUN set -e \
+      && python -m pip install pandas
+
 # az # copy Makefile, .v20.conf, etc.
 COPY ./ .
 
