@@ -1,0 +1,7 @@
+*pyc
+env/
+env-python2/
+build/
+*.sw*
+*.egg-info
+.v20.conf
