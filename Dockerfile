@@ -143,9 +143,7 @@ RUN set -e \
      && make bootstrap
 
 RUN set -e \
-     && source env/bin/activate
-
-RUN set -e \
+     && source env/bin/activate \
      && python setup.py develop
 
 CMD ["bash"]
