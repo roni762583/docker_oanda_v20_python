@@ -1,7 +1,4 @@
-#
-# NOTE: THIS DOCKERFILE IS GENERATED VIA "update.sh"
-#
-# PLEASE DO NOT EDIT IT DIRECTLY.
+# Oanda v20 samples can be run in container
 #
 
 FROM buildpack-deps:buster
@@ -22,37 +19,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ENV GPG_KEY E3FF2839C048B25C084DEBE9B26995E310250568
 ENV PYTHON_VERSION 3.8.7
-
-
-
-# 20210113 az from V20 Dockerfile
-# so that no question/dialog is asked during apt-get install
-# ENV DEBIAN_FRONTEND noninteractive
-
-
-ARG DEBIAN_FRONTEND=noninteractive
-
-
-ADD https://bootstrap.pypa.io/get-pip.py /tmp/get-pip.py
-RUN set -e \
-      && ln -sf bash /bin/sh \
-# changed order of link
-      && ln -s /usr/bin/python python3
-RUN set -e \
-      && apt-get -y update \
-      && apt-get -y dist-upgrade \
-      && apt-get -y install --no-install-recommends --no-install-suggests \
-        apt-transport-https ca-certificates curl python3 python3-distutils \
-      && apt-get -y autoremove \
-      && apt-get clean \
-      && rm -rf /var/lib/apt/lists/*
-RUN set -e \
-      && /usr/bin/python3 /tmp/get-pip.py \
-      && pip install -U --no-cache-dir pip v20
-
-RUN set -e \
-      && apt-get update && apt-get install make
-
 
 RUN set -ex \
 	\
@@ -101,10 +67,10 @@ RUN cd /usr/local/bin \
 	&& ln -s python3-config python-config
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
-ENV PYTHON_PIP_VERSION 20.3.3
+ENV PYTHON_PIP_VERSION 21.0.1
 # https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/5f38681f7f5872e4032860b54e9cc11cf0374932/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 6a0b13826862f33c13b614a921d36253bfa1ae779c5fbf569876f3585057e9d2
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/4be3fe44ad9dedc028629ed1497052d65d281b8e/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 8006625804f55e1bd99ad4214fd07082fee27a1c35945648a58f9087a714e9d4
 
 RUN set -ex; \
 	\
@@ -126,24 +92,44 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-# az 2021-02-07
+#CMD ["python3"] # az
+# az
 RUN set -e \
-     && /usr/local/bin/python -m pip install --upgrade pip
+      && python -m pip install pyyaml
+# az
 RUN set -e \
-      && pip install pyyaml
-RUN set -e \
-      && pip install v20
+      && python -m pip install v20
+
+# az
 RUN set -e \
       && python -m pip install virtualenv
 
-# copy Makefile, .v20.conf, etc.
+# az
+RUN set -e \
+      && python -m pip install ujson
+
+# az
+RUN set -e \
+      && python -m pip install tabulate
+
+# az # copy Makefile, .v20.conf, etc.
 COPY ./ .
 
+# az # move .v20.conf to ~
+RUN set -e \
+      && cp .v20.conf ~
+
+# az
 RUN set -e \
      && make bootstrap
 
+# az
 RUN set -e \
-     && source env/bin/activate \
+     && /bin/bash -c "source env/bin/activate"
+
+# az
+RUN set -e \
      && python setup.py develop
 
+# az
 CMD ["bash"]
